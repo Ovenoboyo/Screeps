@@ -4,7 +4,6 @@ import { findStorageToWithdraw } from "./energyStorageManager"
 export class CourierManager {
   private spawn: StructureSpawn
   private creepIDs: string[]
-  private usedCreeps: string[] = []
 
   public constructor(spawn: StructureSpawn, creepIDs: string[]) {
     this.spawn = spawn
@@ -14,19 +13,10 @@ export class CourierManager {
   private assignCouriers() {
     for (const id of this.creepIDs) {
       if (this.spawn.store.getFreeCapacity() !== 0) {
-        const creep = Game.creeps[id]
-        const storage = findStorageToWithdraw(creep, true) as StructureExtension
-        if (storage) {
-          this.usedCreeps.push(id)
-          new Courier(creep, this.spawn, storage).run()
-        }
+        new Courier(Game.creeps[id], this.spawn, findStorageToWithdraw(Game.creeps[id], true) as StructureExtension | undefined).run()
       }
     }
-    return this.UnusedCreeps
-  }
-
-  private get UnusedCreeps(): string[] {
-    return this.creepIDs.filter(x => !this.usedCreeps.includes(x));
+    return []
   }
 
   public manage(): string[] {

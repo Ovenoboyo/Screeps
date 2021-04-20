@@ -3,9 +3,9 @@ import { COURIER_COLOR } from "utils/constants";
 export class Courier {
   private creep: Creep
   private spawn: StructureSpawn
-  private storage: StructureExtension
+  private storage: StructureExtension | undefined
 
-  public constructor(creep: Creep, spawn: StructureSpawn, storage: StructureExtension) {
+  public constructor(creep: Creep, spawn: StructureSpawn, storage: StructureExtension | undefined) {
     this.creep = creep;
     this.spawn = spawn
     this.storage = storage
@@ -16,11 +16,13 @@ export class Courier {
   }
 
   private moveToStorage() {
-    this.creep.moveTo(this.storage, { visualizePathStyle: { stroke: COURIER_COLOR } })
+    if (this.storage)
+      this.creep.moveTo(this.storage, { visualizePathStyle: { stroke: COURIER_COLOR } })
   }
 
   private withdrawFromStorage() {
-    this.creep.withdraw(this.storage, 'energy')
+    if (this.storage)
+      this.creep.withdraw(this.storage, 'energy')
   }
 
   private depositInSpawn() {

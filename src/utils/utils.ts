@@ -1,3 +1,5 @@
+import { SPAWN1 } from "./constants";
+
 export function bodyCost(body: BodyPartConstant[]): number {
   let sum = 0;
   for (const part of body)
@@ -28,4 +30,17 @@ export function findNearestStorage(creep: Creep): StructureExtension | Structure
       || structure.structureType === STRUCTURE_SPAWN)
       && structure.store.energy < structure.store.getCapacity("energy")
   }) as StructureExtension | StructureSpawn | null
+}
+
+export function getTotalSpawnEnergy(): number {
+  let totalCapacity = 0
+  const spawn = Game.spawns[SPAWN1]
+
+  totalCapacity += spawn.store.energy
+  const extensions: StructureExtension[] = spawn.room.find(FIND_MY_STRUCTURES, { filter: (structure) => structure.structureType === STRUCTURE_EXTENSION }) as StructureExtension[]
+  for (const e of extensions) {
+    totalCapacity += e.store.energy
+  }
+
+  return totalCapacity
 }

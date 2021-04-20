@@ -1,4 +1,4 @@
-import { bodyCost, randomName } from 'utils/utils'
+import { bodyCost, getTotalSpawnEnergy, randomName } from 'utils/utils'
 import { BuilderManager } from './builderManager'
 import { DeployerManager } from './deployerManager'
 import { HarvesterManager } from './harvesterManager'
@@ -14,7 +14,7 @@ export class GlobalManager {
 
   private spawnCreeps() {
     if (Object.keys(Game.creeps).length < 13) {
-      if (this.spawn.store.energy >= bodyCost([WORK, CARRY, MOVE]) && this.spawn.spawning == null) {
+      if (getTotalSpawnEnergy() >= bodyCost([WORK, CARRY, MOVE]) && this.spawn.spawning == null) {
         this.spawn.spawnCreep([WORK, CARRY, MOVE], randomName())
       }
     }

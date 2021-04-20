@@ -40,10 +40,15 @@ export class Deployer {
     return this.creep.store.getFreeCapacity() === this.creep.store.getCapacity()
   }
 
+  private storageHasEvergy() {
+    return this.spawn.store.energy === 300
+  }
+
   public run(): void {
     if (this.shouldCollect()) {
       this.moveToSpawn()
-      this.creep.withdraw(this.spawn, "energy")
+      if (this.storageHasEvergy())
+        this.creep.withdraw(this.spawn, "energy")
     } else {
       if (this.depositInController() === ERR_NOT_IN_RANGE) {
         this.moveToController()

@@ -2,7 +2,7 @@ import { HARVESTER_COLOR } from "utils/constants";
 
 export class Harvester {
   private creep: Creep
-  private storage: StructureSpawn | StructureExtension
+  private storage: EnergyStorage
   private pos: RoomPosition
   private nearestSource: Source | null
 

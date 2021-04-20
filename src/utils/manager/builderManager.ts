@@ -1,20 +1,23 @@
 import { Builder } from "utils/roles/builder"
+import { EnergyStorageManager } from "./energyStorageManager"
 
 export class BuilderManager {
-  private spawn: StructureSpawn
   private creepIDs: string[]
   private usedCreeps: string[] = []
   private sites: ConstructionSite[]
 
-  public constructor(spawn: StructureSpawn, creepIDs: string[]) {
-    this.spawn = spawn
+  public constructor(room: Room, creepIDs: string[]) {
     this.creepIDs = creepIDs
-    this.sites = this.spawn.room.find(FIND_CONSTRUCTION_SITES)
+    this.sites = room.find(FIND_CONSTRUCTION_SITES)
   }
 
   private generateBuilder(id: string) {
-    new Builder(Game.creeps[id], this.spawn, this.sites[0]).run()
-    this.usedCreeps.push(id)
+    const creep = Game.creeps[id]
+    const storage = EnergyStorageManager.findStorageToWithdraw(creep)
+    if (storage && storage.store.energy >= creep.store.getFreeCapacity()) {
+      new Builder(creep, storage, this.sites[0]).run()
+      this.usedCreeps.push(id)
+    }
   }
 
   private assignBuilders(): string[] {

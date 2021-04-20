@@ -1,5 +1,5 @@
 import { Harvester } from "utils/roles/harvester"
-import { findNearestStorage } from "utils/utils"
+import { EnergyStorageManager } from "./energyStorageManager"
 
 export class HarvesterManager {
   private sources: Source[] = []
@@ -40,8 +40,8 @@ export class HarvesterManager {
 
   private generateHarvester(id: string, source: Source, pos: RoomPosition) {
     const creep = Game.creeps[id]
-    const storage = findNearestStorage(Game.creeps[id])
-    if (storage !== null) {
+    const storage = EnergyStorageManager.findStorageToDeposit(creep)
+    if (storage) {
       new Harvester(creep, storage, source, pos).run()
       this.occupiedCreeps.push(id)
     }

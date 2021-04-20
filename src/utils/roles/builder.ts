@@ -2,12 +2,12 @@ import { BUILDER_COLOR } from "utils/constants";
 
 export class Builder {
   private creep: Creep
-  private spawn: StructureSpawn
+  private storage: StructureSpawn | StructureExtension
   private constructionSite: ConstructionSite
 
-  public constructor(creep: Creep, spawn: StructureSpawn, constructionSite: ConstructionSite) {
+  public constructor(creep: Creep, storage: StructureSpawn | StructureExtension, constructionSite: ConstructionSite) {
     this.creep = creep;
-    this.spawn = spawn
+    this.storage = storage
     this.constructionSite = constructionSite
   }
 
@@ -19,22 +19,22 @@ export class Builder {
     return this.creep.build(this.constructionSite)
   }
 
-  private moveToSpawn() {
-    this.creep.moveTo(this.spawn, { visualizePathStyle: { stroke: BUILDER_COLOR } })
+  private moveToStorage() {
+    this.creep.moveTo(this.storage, { visualizePathStyle: { stroke: BUILDER_COLOR } })
   }
 
   private shouldCollect(): boolean {
     return this.creep.store.getFreeCapacity() === this.creep.store.getCapacity()
   }
 
-  private withdrawFromSpawn() {
-    this.moveToSpawn()
-    this.creep.withdraw(this.spawn, "energy")
+  private withdrawFromStorage() {
+    this.moveToStorage()
+    this.creep.withdraw(this.storage, "energy")
   }
 
   public run(): void {
     if (this.shouldCollect()) {
-      this.withdrawFromSpawn()
+      this.withdrawFromStorage()
     } else {
       if (this.build() === ERR_NOT_IN_RANGE) {
         this.moveToConstruction()

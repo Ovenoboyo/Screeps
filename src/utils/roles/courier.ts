@@ -33,12 +33,16 @@ export class Courier {
     return this.creep.store.getFreeCapacity() === this.creep.store.getCapacity()
   }
 
+  private isSpawnFull() {
+    return (this.spawn.store.getFreeCapacity('energy') === 0)
+  }
+
   public run(): void {
     if (this.shouldCollect()) {
       this.moveToStorage()
       this.withdrawFromStorage()
     } else {
-      if (this.depositInSpawn() === ERR_NOT_IN_RANGE) this.moveToSpawn()
+      if (!this.isSpawnFull() && this.depositInSpawn() === ERR_NOT_IN_RANGE) this.moveToSpawn()
     }
   }
 }

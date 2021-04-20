@@ -2,11 +2,11 @@ import { HARVESTER_COLOR } from "utils/constants";
 
 export class Harvester {
   private creep: Creep
-  private storage: EnergyStorage
+  private storage: EnergyStorage | null
   private pos: RoomPosition
   private nearestSource: Source | null
 
-  public constructor(creep: Creep, storage: StructureSpawn | StructureExtension, sources: Source | null, pos: RoomPosition) {
+  public constructor(creep: Creep, storage: EnergyStorage | null, sources: Source | null, pos: RoomPosition) {
     this.creep = creep;
     this.storage = storage
     this.nearestSource = sources
@@ -29,7 +29,8 @@ export class Harvester {
   }
 
   private moveToStorage() {
-    this.creep.moveTo(this.storage, { visualizePathStyle: { stroke: HARVESTER_COLOR } })
+    if (this.storage)
+      this.creep.moveTo(this.storage, { visualizePathStyle: { stroke: HARVESTER_COLOR } })
   }
 
   private transfer(target: Structure<any>, resource: ResourceConstant) {
@@ -41,13 +42,14 @@ export class Harvester {
   }
 
   public run(): void {
-    if (this.moveToSource() === OK) {
-      this.harvestSource()
-    }
-
     if (this.shouldTransfer()) {
       this.moveToStorage()
-      this.transfer(this.storage, "energy")
+      if (this.storage)
+        this.transfer(this.storage, "energy")
+    } else {
+      if (this.moveToSource() === OK) {
+        this.harvestSource()
+      }
     }
   }
 }

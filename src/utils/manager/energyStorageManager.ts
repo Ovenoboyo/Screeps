@@ -1,32 +1,17 @@
 
 export const storageUsedMap: { [key: string]: { withdrawing: boolean, depositing: boolean } } = {}
 
-export function findStorage(creep: Creep, onlyExtension: boolean, capacityCheckCallback: (freeCapacity: number) => boolean): EnergyStorage | undefined {
-  const storage = creep.room.find(FIND_MY_STRUCTURES, {
-    filter: (structure) => (structure.structureType === STRUCTURE_EXTENSION || structure.structureType === STRUCTURE_SPAWN)
-  }) as (StructureSpawn | StructureExtension)[]
-
-  storage.sort((a, b) => a.pos.getRangeTo(creep.pos.x, creep.pos.y) - b.pos.getRangeTo(creep.pos.x, creep.pos.y))
-
-  for (const s of storage) {
-    if (capacityCheckCallback(s.store.getFreeCapacity('energy'))) {
-      if (onlyExtension) {
-        if (s.structureType === STRUCTURE_EXTENSION) {
-          return s
-        }
-      } else {
-        return s
-      }
-    }
-  }
-  return undefined
+export function findStorage(creep: Creep, onlyExtension: boolean, capacityCheckCallback: (freeCapacity: number, totalCapacity: number) => boolean): EnergyStorage | null {
+  return creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
+    filter: (structure) => ((structure.structureType === STRUCTURE_EXTENSION || (!onlyExtension && structure.structureType === STRUCTURE_SPAWN)) && capacityCheckCallback(structure.store.getFreeCapacity('energy'), structure.store.getCapacity('energy')))
+  }) as EnergyStorage | null
 }
 
-export function findStorageToDeposit(creep: Creep): EnergyStorage | undefined {
+export function findStorageToDeposit(creep: Creep): EnergyStorage | null {
   return findStorage(creep, false, (freeCapacity) => freeCapacity > 0)
 
 }
 
-export function findStorageToWithdraw(creep: Creep, onlyExtension: boolean): EnergyStorage | undefined {
-  return findStorage(creep, onlyExtension, (freeCapacity) => freeCapacity === 0)
+export function findStorageToWithdraw(creep: Creep, onlyExtension: boolean): EnergyStorage | null {
+  return findStorage(creep, onlyExtension, (freeCapacity, total) => freeCapacity < total)
 }

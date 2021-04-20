@@ -13,7 +13,7 @@ export class DeployerManager {
   private assignDeployers() {
 
     for (const [index, id] of this.creepIDs.entries()) {
-      if (this.spawn.store.energy > Game.creeps[id].store.getFreeCapacity()) {
+      if (this.spawn.store.energy > Game.creeps[id].store.getFreeCapacity('energy')) {
         new Deployer(Game.creeps[id], this.spawn, index === 0).run()
         this.usedCreeps.push(id)
       }

@@ -14,7 +14,7 @@ export class GlobalManager {
   }
 
   private spawnCreeps() {
-    if (Object.keys(Game.creeps).length < 22) {
+    if (Object.keys(Game.creeps).length < 18) {
       if (getTotalSpawnEnergy() >= bodyCost([WORK, CARRY, MOVE]) && this.spawn.spawning == null) {
         this.spawn.spawnCreep([WORK, CARRY, MOVE], randomName())
       }
@@ -28,7 +28,8 @@ export class GlobalManager {
     this.creepIDs.push(...new DeployerManager(this.spawn, this.nextCreep()).manage())
 
     for (const id of this.creepIDs) {
-      this.forceDepositToSpawn(Game.creeps[id])
+      // this.forceDepositToSpawn(Game.creeps[id])
+      Game.creeps[id].moveTo(28, 18)
     }
   }
 

@@ -12,9 +12,7 @@ export class CourierManager {
 
   private assignCouriers() {
     for (const id of this.creepIDs) {
-      if (this.spawn.store.getFreeCapacity() !== 0) {
-        new Courier(Game.creeps[id], this.spawn, findStorageToWithdraw(Game.creeps[id], true) as StructureExtension | undefined).run()
-      }
+      new Courier(Game.creeps[id], this.spawn, findStorageToWithdraw(Game.creeps[id], true) as StructureExtension | undefined).run()
     }
     return []
   }

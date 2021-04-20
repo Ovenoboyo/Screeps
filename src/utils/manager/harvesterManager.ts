@@ -39,12 +39,8 @@ export class HarvesterManager {
   }
 
   private generateHarvester(id: string, source: Source, pos: RoomPosition) {
-    const creep = Game.creeps[id]
-    const storage = findStorageToDeposit(creep)
-    if (storage) {
-      new Harvester(creep, storage, source, pos).run()
-      this.occupiedCreeps.push(id)
-    }
+    new Harvester(Game.creeps[id], findStorageToDeposit(Game.creeps[id]), source, pos).run()
+
   }
 
   private checkAllSources(sources: Source[]): string[] {
@@ -67,6 +63,7 @@ export class HarvesterManager {
         if ((position = this.hasSourceEmptyTile(sourcePositionMap)) !== undefined) {
           this.generateHarvester(id, source, sourcePositionMap[position].pos)
           sourcePositionMap[position].isOccupied = true
+          this.occupiedCreeps.push(id)
         }
       }
     }

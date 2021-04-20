@@ -1,12 +1,12 @@
 export class Harvester {
   private creep: Creep
-  private spawn: StructureSpawn
+  private storage: StructureSpawn | StructureExtension
   private pos: RoomPosition
   private nearestSource: Source | null
 
-  public constructor(creep: Creep, spawn: StructureSpawn, sources: Source | null, pos: RoomPosition) {
+  public constructor(creep: Creep, storage: StructureSpawn | StructureExtension, sources: Source | null, pos: RoomPosition) {
     this.creep = creep;
-    this.spawn = spawn
+    this.storage = storage
     this.nearestSource = sources
     this.pos = pos
   }
@@ -26,8 +26,8 @@ export class Harvester {
     return 0
   }
 
-  private moveToSpawn() {
-    this.creep.moveTo(this.spawn, { visualizePathStyle: { stroke: "#ffffff" } })
+  private moveToStorage() {
+    this.creep.moveTo(this.storage, { visualizePathStyle: { stroke: "#ffffff" } })
   }
 
   private transfer(target: Structure<any>, resource: ResourceConstant) {
@@ -44,8 +44,8 @@ export class Harvester {
     }
 
     if (this.shouldTransfer()) {
-      this.moveToSpawn()
-      this.transfer(this.spawn, "energy")
+      this.moveToStorage()
+      this.transfer(this.storage, "energy")
     }
   }
 }

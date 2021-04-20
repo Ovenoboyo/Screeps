@@ -13,7 +13,7 @@ export class GlobalManager {
   }
 
   private spawnCreeps() {
-    if (13 - Object.keys(Game.creeps).length) {
+    if (Object.keys(Game.creeps).length < 13) {
       if (this.spawn.store.energy >= bodyCost([WORK, CARRY, MOVE]) && this.spawn.spawning == null) {
         this.spawn.spawnCreep([WORK, CARRY, MOVE], randomName())
       }
@@ -21,7 +21,7 @@ export class GlobalManager {
   }
 
   private assignRoles() {
-    this.creepIDs.push(...new HarvesterManager(this.spawn, this.nextCreep(7)).manage())
+    this.creepIDs.push(...new HarvesterManager(this.spawn.room, this.nextCreep()).manage())
     this.creepIDs.push(...new BuilderManager(this.spawn, this.nextCreep(3)).manage())
     this.creepIDs.push(...new DeployerManager(this.spawn, this.nextCreep()).manage())
 

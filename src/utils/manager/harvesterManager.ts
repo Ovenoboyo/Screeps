@@ -1,20 +1,15 @@
 import { Harvester } from "utils/roles/harvester"
-
-type SourceMap = {
-  [key: string]: { pos: RoomPosition, type: TERRAIN_MASK_WALL | TERRAIN_MASK_SWAMP | 0, isOccupied: boolean }
-}
+import { findNearestStorage } from "utils/utils"
 
 export class HarvesterManager {
   private sources: Source[] = []
-  private spawn: StructureSpawn
   private room: Room
   private creepIDs: string[]
   private occupiedCreeps: string[] = []
 
-  public constructor(spawn: StructureSpawn, creepIDs: string[]) {
-    this.spawn = spawn
-    this.sources = this.spawn.room.find(FIND_SOURCES_ACTIVE)
-    this.room = this.spawn.room
+  public constructor(room: Room, creepIDs: string[]) {
+    this.sources = room.find(FIND_SOURCES_ACTIVE)
+    this.room = room
     this.creepIDs = creepIDs
   }
 
@@ -44,8 +39,12 @@ export class HarvesterManager {
   }
 
   private generateHarvester(id: string, source: Source, pos: RoomPosition) {
-    new Harvester(Game.creeps[id], this.spawn, source, pos).run()
-    this.occupiedCreeps.push(id)
+    const creep = Game.creeps[id]
+    const storage = findNearestStorage(Game.creeps[id])
+    if (storage !== null) {
+      new Harvester(creep, storage, source, pos).run()
+      this.occupiedCreeps.push(id)
+    }
   }
 
   private checkAllSources(sources: Source[]): string[] {
@@ -68,7 +67,6 @@ export class HarvesterManager {
         if ((position = this.hasSourceEmptyTile(sourcePositionMap)) !== undefined) {
           this.generateHarvester(id, source, sourcePositionMap[position].pos)
           sourcePositionMap[position].isOccupied = true
-          break
         }
       }
     }

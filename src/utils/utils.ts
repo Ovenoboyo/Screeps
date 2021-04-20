@@ -21,3 +21,11 @@ function getRandomString(length: number) {
   }
   return result;
 }
+
+export function findNearestStorage(creep: Creep): StructureExtension | StructureSpawn | null {
+  return creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
+    filter: (structure) => (structure.structureType === STRUCTURE_EXTENSION
+      || structure.structureType === STRUCTURE_SPAWN)
+      && structure.store.energy < structure.store.getCapacity("energy")
+  }) as StructureExtension | StructureSpawn | null
+}

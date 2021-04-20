@@ -12,6 +12,10 @@ interface Memory {
   log: any;
 }
 
+type SourceMap = {
+  [key: string]: { pos: RoomPosition, type: TERRAIN_MASK_WALL | TERRAIN_MASK_SWAMP | 0, isOccupied: boolean }
+}
+
 // `global` extension samples
 declare namespace NodeJS {
   interface Global {

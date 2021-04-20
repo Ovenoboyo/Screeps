@@ -1,3 +1,5 @@
+import { HARVESTER_COLOR } from "utils/constants";
+
 export class Harvester {
   private creep: Creep
   private storage: StructureSpawn | StructureExtension
@@ -13,7 +15,7 @@ export class Harvester {
 
   private moveToSource(): ERR_NOT_IN_RANGE | OK {
     if (!this.creep.pos.isEqualTo(this.pos)) {
-      this.creep.moveTo(this.pos, { visualizePathStyle: { stroke: "#ffaa00" } })
+      this.creep.moveTo(this.pos, { visualizePathStyle: { stroke: HARVESTER_COLOR } })
       if (!this.creep.pos.isEqualTo(this.pos)) return ERR_NOT_IN_RANGE
     }
     return OK
@@ -27,7 +29,7 @@ export class Harvester {
   }
 
   private moveToStorage() {
-    this.creep.moveTo(this.storage, { visualizePathStyle: { stroke: "#ffffff" } })
+    this.creep.moveTo(this.storage, { visualizePathStyle: { stroke: HARVESTER_COLOR } })
   }
 
   private transfer(target: Structure<any>, resource: ResourceConstant) {

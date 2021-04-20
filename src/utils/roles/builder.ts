@@ -1,3 +1,5 @@
+import { BUILDER_COLOR } from "utils/constants";
+
 export class Builder {
   private creep: Creep
   private spawn: StructureSpawn
@@ -10,7 +12,7 @@ export class Builder {
   }
 
   private moveToConstruction() {
-    this.creep.moveTo(this.constructionSite, { visualizePathStyle: { stroke: "#ffaa00" } })
+    this.creep.moveTo(this.constructionSite, { visualizePathStyle: { stroke: BUILDER_COLOR } })
   }
 
   private build() {
@@ -18,7 +20,7 @@ export class Builder {
   }
 
   private moveToSpawn() {
-    this.creep.moveTo(this.spawn, { visualizePathStyle: { stroke: "#ffffff" } })
+    this.creep.moveTo(this.spawn, { visualizePathStyle: { stroke: BUILDER_COLOR } })
   }
 
   private shouldCollect(): boolean {

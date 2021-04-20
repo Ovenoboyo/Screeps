@@ -1,3 +1,5 @@
+import { DEPLOYER_COLOR } from "utils/constants"
+
 const CONTROLLER_NOT_FOUND = -12
 
 export class Deployer {
@@ -15,7 +17,7 @@ export class Deployer {
 
   private moveToController() {
     if (this.controller)
-      this.creep.moveTo(this.controller, { visualizePathStyle: { stroke: "#ffaa00" } })
+      this.creep.moveTo(this.controller, { visualizePathStyle: { stroke: DEPLOYER_COLOR } })
   }
 
   private depositInController() {
@@ -33,7 +35,7 @@ export class Deployer {
   }
 
   private moveToSpawn() {
-    this.creep.moveTo(this.spawn, { visualizePathStyle: { stroke: "#ffffff" } })
+    this.creep.moveTo(this.spawn, { visualizePathStyle: { stroke: DEPLOYER_COLOR } })
   }
 
   private shouldCollect(): boolean {

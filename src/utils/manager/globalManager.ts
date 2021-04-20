@@ -1,5 +1,6 @@
 import { bodyCost, getTotalSpawnEnergy, randomName } from 'utils/utils'
 import { BuilderManager } from './builderManager'
+import { CourierManager } from './courierManager'
 import { DeployerManager } from './deployerManager'
 import { HarvesterManager } from './harvesterManager'
 
@@ -13,7 +14,7 @@ export class GlobalManager {
   }
 
   private spawnCreeps() {
-    if (Object.keys(Game.creeps).length < 13) {
+    if (Object.keys(Game.creeps).length < 17) {
       if (getTotalSpawnEnergy() >= bodyCost([WORK, CARRY, MOVE]) && this.spawn.spawning == null) {
         this.spawn.spawnCreep([WORK, CARRY, MOVE], randomName())
       }
@@ -22,6 +23,7 @@ export class GlobalManager {
 
   private assignRoles() {
     this.creepIDs.push(...new HarvesterManager(this.spawn.room, this.nextCreep()).manage())
+    this.creepIDs.push(...new CourierManager(this.spawn, this.nextCreep(5)).manage())
     this.creepIDs.push(...new BuilderManager(this.spawn.room, this.nextCreep(3)).manage())
     this.creepIDs.push(...new DeployerManager(this.spawn, this.nextCreep()).manage())
 

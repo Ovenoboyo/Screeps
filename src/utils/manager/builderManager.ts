@@ -1,5 +1,5 @@
 import { Builder } from "utils/roles/builder"
-import { EnergyStorageManager } from "./energyStorageManager"
+import { findStorageToWithdraw } from "./energyStorageManager"
 
 export class BuilderManager {
   private creepIDs: string[]
@@ -13,7 +13,7 @@ export class BuilderManager {
 
   private generateBuilder(id: string) {
     const creep = Game.creeps[id]
-    const storage = EnergyStorageManager.findStorageToWithdraw(creep)
+    const storage = findStorageToWithdraw(creep, false)
     if (storage && storage.store.energy >= creep.store.getFreeCapacity()) {
       new Builder(creep, storage, this.sites[0]).run()
       this.usedCreeps.push(id)

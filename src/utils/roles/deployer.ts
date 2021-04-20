@@ -29,7 +29,7 @@ export class Deployer {
   private checkControllerUpgrade() {
     if (this.isUpgrader) {
       if (this.controller && (this.controller.progress / this.controller.progressTotal) >= 1) {
-        console.log(this.creep.upgradeController(this.controller))
+        this.creep.upgradeController(this.controller)
       }
     }
   }
@@ -52,9 +52,7 @@ export class Deployer {
       if (this.storageHasEvergy())
         this.creep.withdraw(this.spawn, "energy")
     } else {
-      if (this.depositInController() === ERR_NOT_IN_RANGE) {
-        this.moveToController()
-      }
+      if (this.depositInController() === ERR_NOT_IN_RANGE) this.moveToController()
     }
     this.checkControllerUpgrade()
   }

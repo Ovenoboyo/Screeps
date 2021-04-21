@@ -2,10 +2,10 @@ import { BUILDER_COLOR } from "utils/constants";
 
 export class Builder {
   private creep: Creep
-  private storage: StructureSpawn | StructureExtension
+  private storage: EnergyStorage
   private constructionSite: ConstructionSite
 
-  public constructor(creep: Creep, storage: StructureSpawn | StructureExtension, constructionSite: ConstructionSite) {
+  public constructor(creep: Creep, storage: EnergyStorage, constructionSite: ConstructionSite) {
     this.creep = creep;
     this.storage = storage
     this.constructionSite = constructionSite

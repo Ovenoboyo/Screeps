@@ -29,7 +29,7 @@ export class GlobalManager {
 
     for (const id of this.creepIDs) {
       // this.forceDepositToSpawn(Game.creeps[id])
-      Game.creeps[id].moveTo(28, 18)
+      Game.creeps[id].moveTo(21, 19)
     }
   }
 

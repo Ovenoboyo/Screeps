@@ -1,9 +1,10 @@
-import { BUILDER_COUNT, COURIER_COUNT, REPAIRER_COUNT } from 'utils/constants'
+import { BUILDER_COUNT, COURIER_COUNT, JANITOR_COUNT, REPAIRER_COUNT } from 'utils/constants'
 import { bodyCost, getTotalSpawnEnergy, randomName } from 'utils/utils'
 import { BuilderManager } from './builderManager'
 import { CourierManager } from './courierManager'
 import { DeployerManager } from './deployerManager'
 import { HarvesterManager } from './harvesterManager'
+import { JanitorManager } from './janitorManager'
 import { RepairerManager } from './repairerManager'
 
 export class GlobalManager {
@@ -24,6 +25,7 @@ export class GlobalManager {
   }
 
   private assignRoles() {
+    this.creepIDs.push(...new JanitorManager(this.nextCreep(JANITOR_COUNT)).manage())
     this.creepIDs.push(...new HarvesterManager(this.spawn.room, this.nextCreep()).manage())
     this.creepIDs.push(...new CourierManager(this.nextCreep(COURIER_COUNT)).manage())
     this.creepIDs.push(...new BuilderManager(this.spawn.room, this.nextCreep(BUILDER_COUNT)).manage())

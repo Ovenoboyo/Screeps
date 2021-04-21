@@ -13,7 +13,7 @@ export class BuilderManager {
 
   private generateBuilder(id: string) {
     const creep = Game.creeps[id]
-    const storage = findStorageToWithdraw(creep, false)
+    const storage = findStorageToWithdraw(creep, false, false, false)
     if (storage && storage.store.energy >= creep.store.getFreeCapacity()) {
       new Builder(creep, storage, this.sites[0]).run()
       this.usedCreeps.push(id)

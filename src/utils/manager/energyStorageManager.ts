@@ -20,3 +20,11 @@ export function findStorageToDeposit(creep: Creep, avoidExtension: boolean, avoi
 export function findStorageToWithdraw(creep: Creep, avoidExtension: boolean, avoidSpawn: boolean, avoidContainer: boolean): EnergyStorage | null {
   return findStorage(creep, avoidExtension, avoidSpawn, avoidContainer, (freeCapacity, total) => freeCapacity < total)
 }
+
+export function findDroppedEnergy(creep: Creep): Resource {
+  return creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES) as Resource
+}
+
+export function findRuin(creep: Creep): Ruin {
+  return creep.pos.findClosestByRange(FIND_RUINS, { filter: ruin => ruin.store.getFreeCapacity('energy') < ruin.store.energy ? ruin.store.getCapacity('energy') : 0 }) as Ruin
+}

@@ -1,6 +1,7 @@
 import { findStorageToDeposit, findStorageToWithdraw } from "./energyStorageManager"
-
+import { COURIER_MAX_CONTAINER_DEPOSITER } from "utils/constants"
 import { Courier } from "utils/roles/courier"
+
 
 export class CourierManager {
   private creepIDs: string[]
@@ -12,7 +13,7 @@ export class CourierManager {
   private assignCouriers() {
     for (const [index, id] of this.creepIDs.entries()) {
       const creep = Game.creeps[id]
-      if (index < 3) {
+      if (index < COURIER_MAX_CONTAINER_DEPOSITER) {
         const withdraw = findStorageToWithdraw(creep, false, true, true)
         const deposit = findStorageToDeposit(creep, true, true, false)
         if (deposit && withdraw) {
@@ -21,7 +22,7 @@ export class CourierManager {
         }
       }
 
-      if (index >= 3 && index < this.creepIDs.length) {
+      if (index >= COURIER_MAX_CONTAINER_DEPOSITER && index < this.creepIDs.length) {
         const withdraw = findStorageToWithdraw(creep, true, true, false)
         const deposit = findStorageToDeposit(creep, true, false, true)
         if (deposit && withdraw) {

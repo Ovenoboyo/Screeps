@@ -1,18 +1,34 @@
+import { findStorageToDeposit, findStorageToWithdraw } from "./energyStorageManager"
+
 import { Courier } from "utils/roles/courier"
-import { findStorageToWithdraw } from "./energyStorageManager"
 
 export class CourierManager {
-  private spawn: StructureSpawn
   private creepIDs: string[]
 
-  public constructor(spawn: StructureSpawn, creepIDs: string[]) {
-    this.spawn = spawn
+  public constructor(creepIDs: string[]) {
     this.creepIDs = creepIDs
   }
 
   private assignCouriers() {
-    for (const id of this.creepIDs) {
-      new Courier(Game.creeps[id], this.spawn, findStorageToWithdraw(Game.creeps[id], true) as StructureExtension | undefined).run()
+    for (const [index, id] of this.creepIDs.entries()) {
+      const creep = Game.creeps[id]
+      if (index < 3) {
+        const withdraw = findStorageToWithdraw(creep, false, true, true)
+        const deposit = findStorageToDeposit(creep, true, true, false)
+        if (deposit && withdraw) {
+          new Courier(Game.creeps[id], deposit, withdraw).run()
+          continue
+        }
+      }
+
+      if (index >= 3 && index < this.creepIDs.length) {
+        const withdraw = findStorageToWithdraw(creep, true, true, false)
+        const deposit = findStorageToDeposit(creep, true, false, true)
+        if (deposit && withdraw) {
+          new Courier(Game.creeps[id], deposit, withdraw).run()
+          continue
+        }
+      }
     }
     return []
   }

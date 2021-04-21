@@ -2,10 +2,10 @@ import { COURIER_COLOR } from "utils/constants";
 
 export class Courier {
   private creep: Creep
-  private spawn: StructureSpawn
-  private storage: StructureExtension | undefined
+  private spawn: EnergyStorage
+  private storage: EnergyStorage
 
-  public constructor(creep: Creep, spawn: StructureSpawn, storage: StructureExtension | undefined) {
+  public constructor(creep: Creep, spawn: EnergyStorage, storage: EnergyStorage) {
     this.creep = creep;
     this.spawn = spawn
     this.storage = storage
@@ -16,13 +16,11 @@ export class Courier {
   }
 
   private moveToStorage() {
-    if (this.storage)
-      this.creep.moveTo(this.storage, { visualizePathStyle: { stroke: COURIER_COLOR } })
+    this.creep.moveTo(this.storage, { visualizePathStyle: { stroke: COURIER_COLOR } })
   }
 
   private withdrawFromStorage() {
-    if (this.storage)
-      this.creep.withdraw(this.storage, 'energy')
+    return this.creep.withdraw(this.storage, 'energy')
   }
 
   private depositInSpawn() {
@@ -34,13 +32,12 @@ export class Courier {
   }
 
   private isSpawnFull() {
-    return (this.spawn.store.getFreeCapacity('energy') === 0)
+    return ((this.spawn as StructureContainer).store.getFreeCapacity('energy') === 0)
   }
 
   public run(): void {
     if (this.shouldCollect()) {
-      this.moveToStorage()
-      this.withdrawFromStorage()
+      if (this.withdrawFromStorage() === ERR_NOT_IN_RANGE) this.moveToStorage()
     } else {
       if (!this.isSpawnFull() && this.depositInSpawn() === ERR_NOT_IN_RANGE) this.moveToSpawn()
     }

@@ -24,9 +24,9 @@ export class GlobalManager {
 
   private assignRoles() {
     this.creepIDs.push(...new HarvesterManager(this.spawn.room, this.nextCreep()).manage())
-    this.creepIDs.push(...new CourierManager(this.spawn, this.nextCreep(5)).manage())
+    this.creepIDs.push(...new CourierManager(this.nextCreep(5)).manage())
     this.creepIDs.push(...new BuilderManager(this.spawn.room, this.nextCreep(3)).manage())
-    this.creepIDs.push(...new RepairerManager(this.spawn.room, this.nextCreep(3)).manage())
+    this.creepIDs.push(...new RepairerManager(this.spawn.room, this.nextCreep(2)).manage())
     this.creepIDs.push(...new DeployerManager(this.spawn, this.nextCreep()).manage())
 
     for (const id of this.creepIDs) {

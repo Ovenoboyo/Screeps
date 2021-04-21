@@ -39,7 +39,7 @@ export class HarvesterManager {
   }
 
   private generateHarvester(id: string, source: Source, pos: RoomPosition) {
-    new Harvester(Game.creeps[id], findStorageToDeposit(Game.creeps[id]), source, pos).run()
+    new Harvester(Game.creeps[id], findStorageToDeposit(Game.creeps[id], false, false, false), source, pos).run()
 
   }
 

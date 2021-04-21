@@ -14,7 +14,7 @@ export class RepairerManager {
 
   private generateRepairer(id: string) {
     const creep = Game.creeps[id]
-    const storage = findStorageToWithdraw(creep, false)
+    const storage = findStorageToWithdraw(creep, false, false, false)
     if (storage && storage.store.energy > 0) {
       new Repairer(creep, storage, this.structures[0]).run()
       this.usedCreeps.push(id)

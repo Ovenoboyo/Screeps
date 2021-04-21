@@ -2,9 +2,9 @@
 
 // memory extension samples
 interface CreepMemory {
-  role: string;
-  room: string;
-  working: boolean;
+  harvester: {
+    isDepositing: boolean
+  }
 }
 
 interface Memory {

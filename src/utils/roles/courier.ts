@@ -28,7 +28,7 @@ export class Courier {
   }
 
   private shouldCollect(): boolean {
-    return this.creep.store.getFreeCapacity() === this.creep.store.getCapacity()
+    return this.creep.store.getFreeCapacity() !== 0
   }
 
   private isSpawnFull() {

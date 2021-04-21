@@ -18,8 +18,8 @@ export class GlobalManager {
 
   private spawnCreeps() {
     if (Object.keys(Game.creeps).length < 18) {
-      if (getTotalSpawnEnergy() >= bodyCost([WORK, CARRY, MOVE]) && this.spawn.spawning == null) {
-        this.spawn.spawnCreep([WORK, CARRY, MOVE], randomName())
+      if (getTotalSpawnEnergy() >= bodyCost([WORK, CARRY, CARRY, MOVE]) && this.spawn.spawning == null) {
+        this.spawn.spawnCreep([WORK, CARRY, CARRY, MOVE], randomName())
       }
     }
   }

@@ -5,7 +5,7 @@ export function findStorage(creep: Creep, avoidExtension: boolean, avoidSpawn: b
   return creep.pos.findClosestByRange<EnergyStorage>(FIND_STRUCTURES, {
     filter: (structure) => ((
       (!avoidExtension && structure.structureType === STRUCTURE_EXTENSION) ||
-      (!avoidSpawn && structure.structureType === STRUCTURE_SPAWN) ||
+      (!avoidSpawn && structure.structureType === STRUCTURE_SPAWN && structure.owner.username === creep.owner.username) ||
       (!avoidContainer && structure.structureType === STRUCTURE_CONTAINER)
     ) &&
       capacityCheckCallback((structure as StructureContainer).store.getFreeCapacity('energy'), (structure as StructureContainer).store.getCapacity('energy')))

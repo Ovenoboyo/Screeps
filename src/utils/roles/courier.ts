@@ -2,44 +2,64 @@ import { COURIER_COLOR } from "utils/constants";
 
 export class Courier {
   private creep: Creep
-  private spawn: EnergyStorage
-  private storage: EnergyStorage
+  private spawn: EnergyStorage | null
+  private storage: EnergyStorage | null
 
-  public constructor(creep: Creep, spawn: EnergyStorage, storage: EnergyStorage) {
+  public constructor(creep: Creep, spawn: EnergyStorage | null, storage: EnergyStorage | null) {
     this.creep = creep;
     this.spawn = spawn
     this.storage = storage
   }
 
   private moveToSpawn() {
-    this.creep.moveTo(this.spawn, { visualizePathStyle: { stroke: COURIER_COLOR } })
+    if (this.spawn)
+      this.creep.moveTo(this.spawn, { visualizePathStyle: { stroke: COURIER_COLOR } })
   }
 
   private moveToStorage() {
-    this.creep.moveTo(this.storage, { visualizePathStyle: { stroke: COURIER_COLOR } })
+    if (this.storage)
+      this.creep.moveTo(this.storage, { visualizePathStyle: { stroke: COURIER_COLOR } })
   }
 
   private withdrawFromStorage() {
-    return this.creep.withdraw(this.storage, 'energy')
+    if (this.storage)
+      return this.creep.withdraw(this.storage, 'energy')
+    return OK
   }
 
   private depositInSpawn() {
-    return this.creep.transfer(this.spawn, 'energy')
+    if (this.spawn)
+      return this.creep.transfer(this.spawn, 'energy')
+    return OK
   }
 
-  private shouldCollect(): boolean {
-    return this.creep.store.getFreeCapacity() !== 0
+  private shouldTransfer(): boolean {
+    if (this.creep.memory.isDepositing) {
+      if (this.creep.store.energy === 0) {
+        this.creep.memory.isDepositing = false
+        return false
+      }
+      return true
+    } else {
+      if (this.creep.store.getFreeCapacity() === 0) {
+        this.creep.memory.isDepositing = true
+        return true
+      }
+      return false
+    }
   }
 
   private isSpawnFull() {
-    return ((this.spawn as StructureContainer).store.getFreeCapacity('energy') === 0)
+    if (this.spawn)
+      return ((this.spawn as StructureContainer).store.getFreeCapacity('energy') === 0)
+    return true
   }
 
   public run(): void {
-    if (this.shouldCollect()) {
-      if (this.withdrawFromStorage() === ERR_NOT_IN_RANGE) this.moveToStorage()
-    } else {
+    if (this.shouldTransfer()) {
       if (!this.isSpawnFull() && this.depositInSpawn() === ERR_NOT_IN_RANGE) this.moveToSpawn()
+    } else {
+      if (this.withdrawFromStorage() === ERR_NOT_IN_RANGE) this.moveToStorage()
     }
   }
 }

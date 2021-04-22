@@ -11,10 +11,6 @@ export class Harvester {
     this.storage = storage
     this.nearestSource = sources
     this.pos = pos
-
-    if (!this.creep.memory.harvester) {
-      this.creep.memory = { harvester: { isDepositing: false } }
-    }
   }
 
   private moveToSource(): ERR_NOT_IN_RANGE | OK {
@@ -38,19 +34,19 @@ export class Harvester {
   }
 
   private transfer(target: Structure<any>, resource: ResourceConstant) {
-    this.creep.transfer(target, resource)
+    return this.creep.transfer(target, resource)
   }
 
   private shouldTransfer(): boolean {
-    if (this.creep.memory.harvester.isDepositing) {
+    if (this.creep.memory.isDepositing) {
       if (this.creep.store.energy === 0) {
-        this.creep.memory.harvester.isDepositing = false
+        this.creep.memory.isDepositing = false
         return false
       }
       return true
     } else {
       if (this.creep.store.getFreeCapacity() === 0) {
-        this.creep.memory.harvester.isDepositing = true
+        this.creep.memory.isDepositing = true
         return true
       }
       return false
@@ -59,9 +55,9 @@ export class Harvester {
 
   public run(): void {
     if (this.shouldTransfer()) {
-      this.moveToStorage()
       if (this.storage)
-        this.transfer(this.storage, "energy")
+        if (this.transfer(this.storage, "energy") === ERR_NOT_IN_RANGE)
+          this.moveToStorage()
     } else {
       if (this.moveToSource() === OK) {
         this.harvestSource()

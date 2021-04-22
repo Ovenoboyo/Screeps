@@ -22,15 +22,14 @@ export const REPAIRER_COUNT = 2
 export const TOTAL_CREEPS_COUNT = JANITOR_SPAWN_COUNT + COURIER_SPAWN_COUNT + BUILDER_SPAWN_COUNT + REPAIRER__SPAWN_COUNT + HARVESTER_SPAWN_COUNT + DEPLOYER_SPAWN_COUNT
 
 const HARVESTER_BODY = [WORK, CARRY, CARRY, MOVE, MOVE]
-const DEPLOYER_BODY = [CARRY, CARRY, CARRY, MOVE, MOVE]
 
 export const preferredCounts: { [key in Role]: { count: number, body: BodyPartConstant[] } } = {
-  'janitor': { count: JANITOR_SPAWN_COUNT, body: DEPLOYER_BODY },
-  'courier': { count: COURIER_SPAWN_COUNT, body: DEPLOYER_BODY },
+  'janitor': { count: JANITOR_SPAWN_COUNT, body: HARVESTER_BODY },
+  'courier': { count: COURIER_SPAWN_COUNT, body: HARVESTER_BODY },
   'builder': { count: BUILDER_SPAWN_COUNT, body: HARVESTER_BODY },
   'repairer': { count: REPAIRER__SPAWN_COUNT, body: HARVESTER_BODY },
   'harvester': { count: HARVESTER_SPAWN_COUNT, body: HARVESTER_BODY },
-  'deployer': { count: DEPLOYER_SPAWN_COUNT, body: DEPLOYER_BODY },
+  'deployer': { count: DEPLOYER_SPAWN_COUNT, body: HARVESTER_BODY },
 }
 
 

@@ -1,4 +1,4 @@
-import { BUILDER_COUNT, BUILDER_SPAWN_COUNT, COURIER_COUNT, COURIER_SPAWN_COUNT, JANITOR_COUNT, REPAIRER_COUNT, TOTAL_CREEPS_COUNT, preferredCounts } from 'utils/constants'
+import { BUILDER_COUNT, COURIER_COUNT, JANITOR_COUNT, REPAIRER_COUNT, TOTAL_CREEPS_COUNT, preferredCounts } from 'utils/constants'
 import { bodyCost, getTotalSpawnEnergy, randomName } from 'utils/utils'
 import { BuilderManager } from './builderManager'
 import { CourierManager } from './courierManager'

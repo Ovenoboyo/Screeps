@@ -3,9 +3,9 @@ import { JANITOR_COLOR } from "utils/constants";
 export class Janitor {
   private creep: Creep
   private deposit: EnergyStorage
-  private dropped: Resource
+  private dropped: Resource<'energy'> | Ruin
 
-  public constructor(creep: Creep, spawn: EnergyStorage, dropped: Resource) {
+  public constructor(creep: Creep, spawn: EnergyStorage, dropped: Resource<'energy'> | Ruin) {
     this.creep = creep;
     this.deposit = spawn
     this.dropped = dropped
@@ -20,7 +20,11 @@ export class Janitor {
   }
 
   private pickup() {
-    return this.creep.pickup(this.dropped)
+    if (this.dropped instanceof Resource)
+      return this.creep.pickup(this.dropped)
+    else if (this.dropped instanceof Ruin)
+      return this.creep.withdraw(this.dropped, 'energy')
+    return OK
   }
 
   private depositInSpawn() {

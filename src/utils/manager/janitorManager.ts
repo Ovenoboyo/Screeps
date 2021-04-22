@@ -13,7 +13,7 @@ export class JanitorManager {
     for (const id of this.creepIDs) {
       const creep = Game.creeps[id]
       const deposit = findStorageToDeposit(creep, false, false, false)
-      const dropped = findDroppedEnergy(creep)
+      const dropped: Resource<'energy'> | Ruin = findDroppedEnergy(creep) || findRuin(creep)
       if (deposit && dropped) {
         new Janitor(creep, deposit, dropped).run()
         this.usedCreeps.push(id)

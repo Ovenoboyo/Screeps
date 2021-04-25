@@ -65,8 +65,8 @@ export class GlobalManager {
     for (const room in this.creepIDs) {
       this.creepIDs[room].push(...new JanitorManager(Game.rooms[room], this.spawn, this.nextCreep('janitor', room, JANITOR_COUNT, true)).manage())
       this.creepIDs[room].push(...new HarvesterManager(Game.rooms[room], this.spawn, this.nextCreep('harvester', room, undefined, true)).manage())
-      this.creepIDs[room].push(...new CourierManager(Game.rooms[room], this.spawn, this.nextCreep('courier', room, COURIER_COUNT, false)).manage())
-      this.creepIDs[room].push(...new SoldierManager(Game.rooms[room], this.spawn, this.nextCreep('soldier', room, COURIER_COUNT, false)).manage())
+      this.creepIDs[room].push(...new CourierManager(Game.rooms[room], this.spawn, this.nextCreep('courier', room, COURIER_COUNT, true)).manage())
+      this.creepIDs[room].push(...new SoldierManager(Game.rooms[room], this.spawn, this.nextCreep('soldier', room, COURIER_COUNT, true)).manage())
 
       if (!isCreepsInsufficient()) {
         this.creepIDs[room].push(...new BuilderManager(Game.rooms[room], this.spawn, this.nextCreep('builder', room, BUILDER_COUNT, true)).manage())

@@ -9,8 +9,8 @@ export const JANITOR_SPAWN_COUNT = 0
 export const COURIER_SPAWN_COUNT = 1
 export const BUILDER_SPAWN_COUNT = 2
 export const REPAIRER__SPAWN_COUNT = 0
-export const HARVESTER_SPAWN_COUNT = 2
-export const DEPLOYER_SPAWN_COUNT = 3
+export const HARVESTER_SPAWN_COUNT = 3
+export const DEPLOYER_SPAWN_COUNT = 2
 export const SOLDIER_SPAWN_COUNT = 3
 
 export const JANITOR_COUNT = 1

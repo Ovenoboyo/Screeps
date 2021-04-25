@@ -22,7 +22,7 @@ export function findStorageToWithdraw(creep: Creep, avoidExtension: boolean, avo
 }
 
 export function findDroppedEnergy(creep: Creep): Resource<'energy'> | null {
-  return creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES, { filter: resource => resource.resourceType === 'energy' }) as Resource<'energy'> | null
+  return creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES, { filter: resource => resource.resourceType === 'energy' && resource.amount > 25 }) as Resource<'energy'> | null
 }
 
 export function findRuin(creep: Creep): Ruin {

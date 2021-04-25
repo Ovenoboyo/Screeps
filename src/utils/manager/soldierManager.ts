@@ -2,10 +2,12 @@ import { Soldier } from "utils/roles/soldier";
 
 export class SoldierManager {
   private creepIDs: string[]
+  private room: Room
   private usedCreeps: string[] = []
 
-  public constructor(creepIDs: string[]) {
+  public constructor(room: Room, creepIDs: string[]) {
     this.creepIDs = creepIDs
+    this.room = room
   }
 
   private get UnusedCreeps(): string[] {
@@ -13,7 +15,7 @@ export class SoldierManager {
   }
 
   private findHostile(): Creep[] | Structure[] {
-    return Game.creeps[this.creepIDs[0]].room.find(FIND_HOSTILE_CREEPS) ?? (Game.creeps[this.creepIDs[0]].room.find(FIND_HOSTILE_STRUCTURES) as Structure[])
+    return this.room.find(FIND_HOSTILE_CREEPS) || (Game.creeps[this.creepIDs[0]].room.find(FIND_HOSTILE_STRUCTURES) as Structure[])
   }
 
   private assignSoldiers() {

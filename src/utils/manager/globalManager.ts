@@ -28,6 +28,7 @@ export class GlobalManager {
       this.repopulateCounts()
     }
 
+
     if (Object.keys(Game.creeps).length < TOTAL_CREEPS_COUNT) {
       if (this.spawn.spawning == null) {
         this.repopulateCounts()
@@ -47,7 +48,8 @@ export class GlobalManager {
   private repopulateCounts() {
     Memory.creepCount = {}
     for (const c in Game.creeps) {
-      this.incCount(Game.creeps[c].memory.role)
+      if (Game.creeps[c].memory.role)
+        this.incCount(Game.creeps[c].memory.role)
     }
   }
 
@@ -63,11 +65,11 @@ export class GlobalManager {
       this.creepIDs[room].push(...new JanitorManager(this.nextCreep('janitor', room, JANITOR_COUNT, true)).manage())
       this.creepIDs[room].push(...new HarvesterManager(Game.rooms[room], this.nextCreep('harvester', room, undefined, true)).manage())
       this.creepIDs[room].push(...new CourierManager(this.nextCreep('courier', room, COURIER_COUNT, false)).manage())
-      this.creepIDs[room].push(...new SoldierManager(this.nextCreep('soldier', room, COURIER_COUNT, false)).manage())
+      this.creepIDs[room].push(...new SoldierManager(Game.rooms[room], this.nextCreep('soldier', room, COURIER_COUNT, false)).manage())
       if (Object.keys(Game.creeps).length >= TOTAL_CREEPS_COUNT) {
         this.creepIDs[room].push(...new BuilderManager(Game.rooms[room], this.nextCreep('builder', room, BUILDER_COUNT, true)).manage())
         this.creepIDs[room].push(...new RepairerManager(Game.rooms[room], this.nextCreep('repairer', room, REPAIRER_COUNT, true)).manage())
-        this.creepIDs[room].push(...new DeployerManager(this.spawn, this.nextCreep('deployer', room, undefined, true)).manage())
+        this.creepIDs[room].push(...new DeployerManager(this.spawn, this.nextCreep('deployer', room, undefined, false)).manage())
       }
     }
 
@@ -76,19 +78,17 @@ export class GlobalManager {
     // }
 
 
-    // for (const room in this.creepIDs) {
-    //   for (const id of this.creepIDs[room]) {
-    //     Game.creeps[id].moveTo(Game.creeps[id]., 13)
-    //   }
-
-    // }
+    for (const room in this.creepIDs) {
+      for (const id of this.creepIDs[room]) {
+        if (Game.creeps[id].store.energy > 0) this.forceDepositToSpawn(Game.creeps[id])
+        else Game.creeps[id].moveTo(36, 17)
+      }
+    }
   }
 
   private forceDepositToSpawn(creep: Creep) {
-    if (creep.store.getUsedCapacity() > 0) {
-      creep.moveTo(this.spawn, { visualizePathStyle: { stroke: "#ffffff" } })
-      creep.transfer(this.spawn, "energy")
-    }
+    if (creep.transfer(this.spawn, "energy") === ERR_NOT_IN_RANGE) creep.moveTo(this.spawn, { visualizePathStyle: { stroke: "#ffffff" } })
+
   }
 
   private nextCreep(role: Role, room: string, no?: number, shouldSubstitute?: boolean) {

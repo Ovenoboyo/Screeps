@@ -28,8 +28,8 @@ export class Repairer {
   }
 
   private withdrawFromStorage() {
-    this.moveToStorage()
-    this.creep.withdraw(this.storage, "energy")
+    if (this.creep.withdraw(this.storage, "energy") === ERR_NOT_IN_RANGE)
+      this.moveToStorage()
   }
 
   public run(): void {

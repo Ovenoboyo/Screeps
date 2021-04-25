@@ -6,14 +6,21 @@ import { DeployerManager } from './deployerManager'
 import { HarvesterManager } from './harvesterManager'
 import { JanitorManager } from './janitorManager'
 import { RepairerManager } from './repairerManager'
+import { SoldierManager } from './soldierManager'
 
 export class GlobalManager {
   private spawn: StructureSpawn
-  private creepIDs: string[]
+  private creepIDs: { [key: string]: string[] } = {}
 
   public constructor(spawn: StructureSpawn) {
     this.spawn = spawn
-    this.creepIDs = Object.keys(Game.creeps).sort()
+
+    const creeps = Object.keys(Game.creeps).sort()
+    for (const c of creeps) {
+      const room = Game.creeps[c].room.name
+      if (this.creepIDs[room]) this.creepIDs[room].push(c)
+      else this.creepIDs[room] = [c]
+    }
   }
 
   private spawnCreeps() {
@@ -24,7 +31,7 @@ export class GlobalManager {
     if (Object.keys(Game.creeps).length < TOTAL_CREEPS_COUNT) {
       if (this.spawn.spawning == null) {
         this.repopulateCounts()
-        const roles: Role[] = ['builder', 'courier', 'deployer', 'harvester', 'janitor', 'repairer']
+        const roles: Role[] = ['soldier', 'builder', 'courier', 'deployer', 'harvester', 'janitor', 'repairer']
 
         for (const key of roles) {
           const memoryCount = Memory.creepCount[key]
@@ -52,16 +59,29 @@ export class GlobalManager {
   }
 
   private assignRoles() {
-    this.creepIDs.push(...new JanitorManager(this.nextCreep('janitor', JANITOR_COUNT)).manage())
-    this.creepIDs.push(...new HarvesterManager(this.spawn.room, this.nextCreep('harvester')).manage())
-    this.creepIDs.push(...new BuilderManager(this.spawn.room, this.nextCreep('builder', BUILDER_COUNT)).manage())
-    this.creepIDs.push(...new CourierManager(this.nextCreep('courier', COURIER_COUNT)).manage())
-    this.creepIDs.push(...new RepairerManager(this.spawn.room, this.nextCreep('repairer', REPAIRER_COUNT)).manage())
-    this.creepIDs.push(...new DeployerManager(this.spawn, this.nextCreep('deployer')).manage())
-
-    for (const id of this.creepIDs) {
-      Game.creeps[id].moveTo(21, 19)
+    for (const room in this.creepIDs) {
+      this.creepIDs[room].push(...new JanitorManager(this.nextCreep('janitor', room, JANITOR_COUNT, true)).manage())
+      this.creepIDs[room].push(...new HarvesterManager(Game.rooms[room], this.nextCreep('harvester', room, undefined, true)).manage())
+      this.creepIDs[room].push(...new CourierManager(this.nextCreep('courier', room, COURIER_COUNT, false)).manage())
+      this.creepIDs[room].push(...new SoldierManager(this.nextCreep('soldier', room, COURIER_COUNT, false)).manage())
+      if (Object.keys(Game.creeps).length >= TOTAL_CREEPS_COUNT) {
+        this.creepIDs[room].push(...new BuilderManager(Game.rooms[room], this.nextCreep('builder', room, BUILDER_COUNT, true)).manage())
+        this.creepIDs[room].push(...new RepairerManager(Game.rooms[room], this.nextCreep('repairer', room, REPAIRER_COUNT, true)).manage())
+        this.creepIDs[room].push(...new DeployerManager(this.spawn, this.nextCreep('deployer', room, undefined, true)).manage())
+      }
     }
+
+    // for (const id of this.creepIDs) {
+    //   if (Game.creeps[id].transfer(this.spawn, 'energy') === ERR_NOT_IN_RANGE) Game.creeps[id].moveTo(this.spawn)
+    // }
+
+
+    // for (const room in this.creepIDs) {
+    //   for (const id of this.creepIDs[room]) {
+    //     Game.creeps[id].moveTo(Game.creeps[id]., 13)
+    //   }
+
+    // }
   }
 
   private forceDepositToSpawn(creep: Creep) {
@@ -71,25 +91,27 @@ export class GlobalManager {
     }
   }
 
-  private nextCreep(role: Role, no?: number) {
+  private nextCreep(role: Role, room: string, no?: number, shouldSubstitute?: boolean) {
     let matches: string[] = []
-    for (let i = this.creepIDs.length - 1; i >= 0; i--) {
-      if (Game.creeps[this.creepIDs[i]].memory.role === role) {
-        matches.push(this.creepIDs[i])
-        this.creepIDs.splice(i, 1)
+    for (let i = this.creepIDs[room].length - 1; i >= 0; i--) {
+      if (Game.creeps[this.creepIDs[room][i]].memory.role === role) {
+        matches.push(this.creepIDs[room][i])
+        this.creepIDs[room].splice(i, 1)
       }
     }
 
-    if (no && matches.length >= no) {
-      matches = matches.slice(0, no)
-    } else {
-      let count = 0
-      for (let i = this.creepIDs.length - 1; i >= 0; i--) {
-        if ((no && count < no) || no === undefined) {
-          if (this.canSubstitute(role, (Memory.creeps[this.creepIDs[i]].role))) {
-            matches.push(this.creepIDs[i])
-            this.creepIDs.splice(i, 1)
-            count++
+    if (shouldSubstitute) {
+      if (no && matches.length >= no) {
+        matches = matches.slice(0, no)
+      } else {
+        let count = matches.length
+        for (let i = this.creepIDs[room].length - 1; i >= 0; i--) {
+          if ((no && count < no) || no === undefined) {
+            if (this.canSubstitute(role, (Memory.creeps[this.creepIDs[room][i]].role))) {
+              matches.push(this.creepIDs[room][i])
+              this.creepIDs[room].splice(i, 1)
+              count++
+            }
           }
         }
       }

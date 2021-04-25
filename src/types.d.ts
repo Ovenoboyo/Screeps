@@ -1,6 +1,6 @@
 // example declaration file - remove these and add your own custom typings
 
-type Role = 'harvester' | 'deployer' | 'janitor' | 'builder' | 'repairer' | 'courier'
+type Role = 'soldier' | 'harvester' | 'deployer' | 'janitor' | 'builder' | 'repairer' | 'courier'
 
 type RoleCountMap = { [key in Role]?: number }
 // memory extension samples

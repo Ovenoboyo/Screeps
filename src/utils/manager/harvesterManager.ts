@@ -54,10 +54,9 @@ export class HarvesterManager {
     return this.UnusedCreeps
   }
 
-  private isSourceFarmable(source: Source) {
+  private assignHarvesters(ids: string[], sourcePositionMap: SourceMap, source: Source) {
     let position: string | undefined
-    const sourcePositionMap = this.getSourceMap(source)
-    for (const id of this.creepIDs) {
+    for (const id of ids) {
       if (!this.isCreepAssigned(id)) {
         if ((position = this.hasSourceEmptyTile(sourcePositionMap)) !== undefined) {
           this.generateHarvester(id, source, sourcePositionMap[position].pos)
@@ -66,6 +65,13 @@ export class HarvesterManager {
         }
       }
     }
+  }
+
+  private isSourceFarmable(source: Source) {
+    const sourcePositionMap = this.getSourceMap(source)
+    const definedHarvesters = this.creepIDs.filter((val) => Memory.creeps[val].role === "harvester")
+    this.assignHarvesters(definedHarvesters, sourcePositionMap, source)
+    this.assignHarvesters(this.creepIDs, sourcePositionMap, source)
   }
 
   public manage(): string[] {

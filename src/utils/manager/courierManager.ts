@@ -4,6 +4,7 @@ import { Courier } from "utils/roles/courier"
 
 export class CourierManager {
   private creepIDs: string[]
+  private usedCreeps: string[] = []
 
   public constructor(creepIDs: string[]) {
     this.creepIDs = creepIDs
@@ -14,9 +15,16 @@ export class CourierManager {
       const creep = Game.creeps[id]
       const withdraw = findStorageToWithdraw(creep, true, true, false)
       const deposit = findStorageToDeposit(creep, false, false, true)
-      new Courier(Game.creeps[id], deposit, withdraw).run()
+      if (withdraw) {
+        new Courier(Game.creeps[id], deposit, withdraw).run()
+        this.usedCreeps.push(id)
+      }
     }
-    return []
+    return this.UnusedCreeps
+  }
+
+  private get UnusedCreeps(): string[] {
+    return this.creepIDs.filter(x => !this.usedCreeps.includes(x));
   }
 
   public manage(): string[] {

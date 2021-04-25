@@ -2,10 +2,10 @@ import { COURIER_COLOR } from "utils/constants";
 
 export class Courier {
   private creep: Creep
-  private spawn: EnergyStorage | null
+  private spawn: EnergyStorage | StructureTower | null
   private storage: EnergyStorage | null
 
-  public constructor(creep: Creep, spawn: EnergyStorage | null, storage: EnergyStorage | null) {
+  public constructor(creep: Creep, spawn: EnergyStorage | StructureTower | null, storage: EnergyStorage | null) {
     this.creep = creep;
     this.spawn = spawn
     this.storage = storage

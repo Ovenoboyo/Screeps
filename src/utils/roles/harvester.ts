@@ -3,10 +3,10 @@ import { HARVESTER_COLOR } from "utils/constants";
 export class Harvester {
   private creep: Creep
   private storage: EnergyStorage | null
-  private pos: RoomPosition
+  private pos?: RoomPosition
   private nearestSource: Source | null
 
-  public constructor(creep: Creep, storage: EnergyStorage | null, sources: Source | null, pos: RoomPosition) {
+  public constructor(creep: Creep, storage: EnergyStorage | null, sources: Source | null, pos?: RoomPosition) {
     this.creep = creep;
     this.storage = storage
     this.nearestSource = sources
@@ -14,10 +14,16 @@ export class Harvester {
   }
 
   private moveToSource(): ERR_NOT_IN_RANGE | OK {
-    if (!this.creep.pos.isEqualTo(this.pos)) {
-      this.creep.moveTo(this.pos, { visualizePathStyle: { stroke: HARVESTER_COLOR } })
-      if (!this.creep.pos.isEqualTo(this.pos)) return ERR_NOT_IN_RANGE
+    if (this.pos) {
+      if (!this.creep.pos.isEqualTo(this.pos)) {
+        this.creep.moveTo(this.pos, { visualizePathStyle: { stroke: HARVESTER_COLOR } })
+        if (!this.creep.pos.isEqualTo(this.pos)) return ERR_NOT_IN_RANGE
+      }
+      return OK
     }
+
+    if (this.nearestSource)
+      this.creep.moveTo(this.nearestSource)
     return OK
   }
 

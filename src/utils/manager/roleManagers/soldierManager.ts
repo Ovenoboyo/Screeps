@@ -1,3 +1,4 @@
+import { HOSTILE_WHITELIST } from "utils/constants";
 import { Manager } from "../genericManager";
 import { Soldier } from "utils/roles/soldier";
 
@@ -7,7 +8,7 @@ export class SoldierManager extends Manager {
   }
 
   private findHostile(): Creep[] | Structure[] {
-    return this.room.find(FIND_HOSTILE_CREEPS) || (Game.creeps[this.creepIDs[0]].room.find(FIND_HOSTILE_STRUCTURES) as Structure[])
+    return this.room.find(FIND_HOSTILE_CREEPS, { filter: creep => !HOSTILE_WHITELIST.includes(creep.owner.username) }) || (Game.creeps[this.creepIDs[0]].room.find(FIND_HOSTILE_STRUCTURES, { filter: structure => structure.owner ? !HOSTILE_WHITELIST.includes(structure.owner.username) : true }) as Structure[])
   }
 
   private assignSoldiers() {

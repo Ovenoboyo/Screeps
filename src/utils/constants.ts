@@ -9,7 +9,7 @@ export const JANITOR_SPAWN_COUNT = 0
 export const COURIER_SPAWN_COUNT = 1
 export const BUILDER_SPAWN_COUNT = 2
 export const REPAIRER__SPAWN_COUNT = 0
-export const HARVESTER_SPAWN_COUNT = 3
+export const HARVESTER_SPAWN_COUNT = 2
 export const DEPLOYER_SPAWN_COUNT = 3
 export const SOLDIER_SPAWN_COUNT = 3
 
@@ -38,6 +38,10 @@ export const preferredCounts: { [key in Role]: { count: number, body: BodyPartCo
   'deployer': { count: DEPLOYER_SPAWN_COUNT, body: DEPLOYER_BODY },
   'soldier': { count: SOLDIER_SPAWN_COUNT, body: SOLDIER_BODY },
 }
+
+export const ONE_HARVESTER_PER_SOURCE = false
+
+export const HOSTILE_WHITELIST = ["Mercyssh"]
 
 export const COURIER_MAX_CONTAINER_DEPOSITER = 3
 

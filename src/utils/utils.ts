@@ -1,4 +1,4 @@
-import { SPAWN1 } from "./constants";
+import { SPAWN1, TOTAL_CREEPS_COUNT } from "./constants";
 
 export function bodyCost(body: BodyPartConstant[]): number {
   let sum = 0;
@@ -35,4 +35,8 @@ export function getTotalSpawnEnergy(): number {
   }
 
   return totalCapacity
+}
+
+export function isCreepsInsufficient(): boolean {
+  return Object.keys(Game.creeps).length < TOTAL_CREEPS_COUNT
 }

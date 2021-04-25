@@ -28,3 +28,7 @@ export function findDroppedEnergy(creep: Creep): Resource<'energy'> | null {
 export function findRuin(creep: Creep): Ruin {
   return creep.pos.findClosestByRange(FIND_RUINS, { filter: ruin => (ruin.store.energy > 0) }) as Ruin
 }
+
+export function findTower(creep: Creep): StructureTower {
+  return creep.pos.findClosestByRange(FIND_MY_STRUCTURES, { filter: structure => structure.structureType === STRUCTURE_TOWER && structure.store.getFreeCapacity('energy') > 0 }) as StructureTower
+}

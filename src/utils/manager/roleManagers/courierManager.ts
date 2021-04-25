@@ -1,4 +1,4 @@
-import { findStorageToDeposit, findStorageToWithdraw } from "../storageManagers/energyStorageManager"
+import { findStorageToDeposit, findStorageToWithdraw, findTower } from "../storageManagers/energyStorageManager"
 
 import { Courier } from "utils/roles/courier"
 import { Manager } from "../genericManager"
@@ -8,7 +8,7 @@ export class CourierManager extends Manager {
     for (const id of this.creepIDs) {
       const creep = Game.creeps[id]
       const withdraw = findStorageToWithdraw(creep, true, true, false)
-      const deposit = findStorageToDeposit(creep, false, false, true)
+      const deposit = findTower(creep) || findStorageToDeposit(creep, false, false, true)
       if (withdraw) {
         new Courier(Game.creeps[id], deposit, withdraw).run()
         this.usedCreeps.push(id)

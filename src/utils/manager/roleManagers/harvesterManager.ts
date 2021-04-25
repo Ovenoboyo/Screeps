@@ -1,5 +1,6 @@
 import { Harvester } from "utils/roles/harvester"
 import { Manager } from "../genericManager"
+import { ONE_HARVESTER_PER_SOURCE } from "utils/constants"
 import { findStorageToDeposit } from "../storageManagers/energyStorageManager"
 
 export class HarvesterManager extends Manager {
@@ -28,7 +29,7 @@ export class HarvesterManager extends Manager {
     return undefined
   }
 
-  private generateHarvester(id: string, source: Source, pos: RoomPosition) {
+  private generateHarvester(id: string, source: Source, pos?: RoomPosition) {
     new Harvester(Game.creeps[id], findStorageToDeposit(Game.creeps[id], false, false, false), source, pos).run()
     this.usedCreeps.push(id)
   }
@@ -40,7 +41,7 @@ export class HarvesterManager extends Manager {
     return this.unusedCreeps
   }
 
-  private assignHarvesters(ids: string[], sourcePositionMap: SourceMap, source: Source) {
+  private assignMaxHarvesters(ids: string[], sourcePositionMap: SourceMap, source: Source) {
     let position: string | undefined
     for (const id of ids) {
       if (!this.isCreepAssigned(id)) {
@@ -52,11 +53,29 @@ export class HarvesterManager extends Manager {
     }
   }
 
+  private assignHarvesters(source: Source) {
+    const definedHarvesters = this.creepIDs.filter((val) => Memory.creeps[val].role === "harvester" && !this.isCreepAssigned(val))
+    if (definedHarvesters.length > 0) {
+      this.generateHarvester(definedHarvesters[0], source)
+      return
+    }
+
+    for (const c of this.creepIDs) {
+      if (this.isCreepAssigned(c)) {
+        this.generateHarvester(c, source)
+      }
+    }
+  }
+
   private isSourceFarmable(source: Source) {
+    if (ONE_HARVESTER_PER_SOURCE) {
+      this.assignHarvesters(source)
+      return
+    }
     const sourcePositionMap = this.getSourceMap(source)
     const definedHarvesters = this.creepIDs.filter((val) => Memory.creeps[val].role === "harvester")
-    this.assignHarvesters(definedHarvesters, sourcePositionMap, source)
-    this.assignHarvesters(this.creepIDs, sourcePositionMap, source)
+    this.assignMaxHarvesters(definedHarvesters, sourcePositionMap, source)
+    this.assignMaxHarvesters(this.creepIDs, sourcePositionMap, source)
   }
 
   public manage(): string[] {

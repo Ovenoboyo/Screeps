@@ -1,13 +1,13 @@
-import { BUILDER_COUNT, COURIER_COUNT, JANITOR_COUNT, REPAIRER_COUNT, TOTAL_CREEPS_COUNT, preferredCounts } from 'utils/constants'
-import { bodyCost, getTotalSpawnEnergy, randomName } from 'utils/utils'
+import { BUILDER_COUNT, COURIER_COUNT, JANITOR_COUNT, preferredCounts } from 'utils/constants'
+import { bodyCost, getTotalSpawnEnergy, isCreepsInsufficient, randomName } from 'utils/utils'
 
 import { BuilderManager } from './roleManagers/builderManager'
 import { CourierManager } from './roleManagers/courierManager'
 import { DeployerManager } from './roleManagers/deployerManager'
 import { HarvesterManager } from './roleManagers/harvesterManager'
 import { JanitorManager } from './roleManagers/janitorManager'
-import { RepairerManager } from './roleManagers/repairerManager'
 import { SoldierManager } from './roleManagers/soldierManager'
+import { TowerManager } from './structureManagers/towerManager'
 
 export class GlobalManager {
   private spawn: StructureSpawn
@@ -30,7 +30,7 @@ export class GlobalManager {
     }
 
 
-    if (Object.keys(Game.creeps).length < TOTAL_CREEPS_COUNT) {
+    if (isCreepsInsufficient()) {
       if (this.spawn.spawning == null) {
         this.repopulateCounts()
         const roles: Role[] = ['soldier', 'builder', 'courier', 'deployer', 'harvester', 'janitor', 'repairer']
@@ -68,12 +68,14 @@ export class GlobalManager {
       this.creepIDs[room].push(...new CourierManager(Game.rooms[room], this.spawn, this.nextCreep('courier', room, COURIER_COUNT, false)).manage())
       this.creepIDs[room].push(...new SoldierManager(Game.rooms[room], this.spawn, this.nextCreep('soldier', room, COURIER_COUNT, false)).manage())
 
-      if (Object.keys(Game.creeps).length >= TOTAL_CREEPS_COUNT) {
+      if (!isCreepsInsufficient()) {
         this.creepIDs[room].push(...new BuilderManager(Game.rooms[room], this.spawn, this.nextCreep('builder', room, BUILDER_COUNT, true)).manage())
-        this.creepIDs[room].push(...new RepairerManager(Game.rooms[room], this.spawn, this.nextCreep('repairer', room, REPAIRER_COUNT, true)).manage())
+        // this.creepIDs[room].push(...new RepairerManager(Game.rooms[room], this.spawn, this.nextCreep('repairer', room, REPAIRER_COUNT, true)).manage())
         this.creepIDs[room].push(...new DeployerManager(Game.rooms[room], this.spawn, this.nextCreep('deployer', room, undefined, false)).manage())
       }
     }
+
+    new TowerManager().manage()
 
     // for (const id of this.creepIDs) {
     //   if (Game.creeps[id].transfer(this.spawn, 'energy') === ERR_NOT_IN_RANGE) Game.creeps[id].moveTo(this.spawn)

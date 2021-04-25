@@ -30,13 +30,13 @@ export class HarvesterManager extends Manager {
 
   private generateHarvester(id: string, source: Source, pos: RoomPosition) {
     new Harvester(Game.creeps[id], findStorageToDeposit(Game.creeps[id], false, false, false), source, pos).run()
+    this.usedCreeps.push(id)
   }
 
   private checkAllSources(sources: Source[]): string[] {
     for (const source of sources) {
       this.isSourceFarmable(source)
     }
-
     return this.unusedCreeps
   }
 
@@ -47,7 +47,6 @@ export class HarvesterManager extends Manager {
         if ((position = this.hasSourceEmptyTile(sourcePositionMap)) !== undefined) {
           this.generateHarvester(id, source, sourcePositionMap[position].pos)
           sourcePositionMap[position].isOccupied = true
-          this.unusedCreeps.push(id)
         }
       }
     }

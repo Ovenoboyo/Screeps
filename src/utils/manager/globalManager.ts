@@ -1,12 +1,13 @@
 import { BUILDER_COUNT, COURIER_COUNT, JANITOR_COUNT, REPAIRER_COUNT, TOTAL_CREEPS_COUNT, preferredCounts } from 'utils/constants'
 import { bodyCost, getTotalSpawnEnergy, randomName } from 'utils/utils'
-import { BuilderManager } from './builderManager'
-import { CourierManager } from './courierManager'
-import { DeployerManager } from './deployerManager'
-import { HarvesterManager } from './harvesterManager'
-import { JanitorManager } from './janitorManager'
-import { RepairerManager } from './repairerManager'
-import { SoldierManager } from './soldierManager'
+
+import { BuilderManager } from './roleManagers/builderManager'
+import { CourierManager } from './roleManagers/courierManager'
+import { DeployerManager } from './roleManagers/deployerManager'
+import { HarvesterManager } from './roleManagers/harvesterManager'
+import { JanitorManager } from './roleManagers/janitorManager'
+import { RepairerManager } from './roleManagers/repairerManager'
+import { SoldierManager } from './roleManagers/soldierManager'
 
 export class GlobalManager {
   private spawn: StructureSpawn
@@ -62,14 +63,15 @@ export class GlobalManager {
 
   private assignRoles() {
     for (const room in this.creepIDs) {
-      this.creepIDs[room].push(...new JanitorManager(this.nextCreep('janitor', room, JANITOR_COUNT, true)).manage())
-      this.creepIDs[room].push(...new HarvesterManager(Game.rooms[room], this.nextCreep('harvester', room, undefined, true)).manage())
-      this.creepIDs[room].push(...new CourierManager(this.nextCreep('courier', room, COURIER_COUNT, false)).manage())
-      this.creepIDs[room].push(...new SoldierManager(Game.rooms[room], this.nextCreep('soldier', room, COURIER_COUNT, false)).manage())
+      this.creepIDs[room].push(...new JanitorManager(Game.rooms[room], this.spawn, this.nextCreep('janitor', room, JANITOR_COUNT, true)).manage())
+      this.creepIDs[room].push(...new HarvesterManager(Game.rooms[room], this.spawn, this.nextCreep('harvester', room, undefined, true)).manage())
+      this.creepIDs[room].push(...new CourierManager(Game.rooms[room], this.spawn, this.nextCreep('courier', room, COURIER_COUNT, false)).manage())
+      this.creepIDs[room].push(...new SoldierManager(Game.rooms[room], this.spawn, this.nextCreep('soldier', room, COURIER_COUNT, false)).manage())
+
       if (Object.keys(Game.creeps).length >= TOTAL_CREEPS_COUNT) {
-        this.creepIDs[room].push(...new BuilderManager(Game.rooms[room], this.nextCreep('builder', room, BUILDER_COUNT, true)).manage())
-        this.creepIDs[room].push(...new RepairerManager(Game.rooms[room], this.nextCreep('repairer', room, REPAIRER_COUNT, true)).manage())
-        this.creepIDs[room].push(...new DeployerManager(this.spawn, this.nextCreep('deployer', room, undefined, false)).manage())
+        this.creepIDs[room].push(...new BuilderManager(Game.rooms[room], this.spawn, this.nextCreep('builder', room, BUILDER_COUNT, true)).manage())
+        this.creepIDs[room].push(...new RepairerManager(Game.rooms[room], this.spawn, this.nextCreep('repairer', room, REPAIRER_COUNT, true)).manage())
+        this.creepIDs[room].push(...new DeployerManager(Game.rooms[room], this.spawn, this.nextCreep('deployer', room, undefined, false)).manage())
       }
     }
 

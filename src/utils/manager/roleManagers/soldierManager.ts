@@ -1,15 +1,7 @@
+import { Manager } from "../genericManager";
 import { Soldier } from "utils/roles/soldier";
 
-export class SoldierManager {
-  private creepIDs: string[]
-  private room: Room
-  private usedCreeps: string[] = []
-
-  public constructor(room: Room, creepIDs: string[]) {
-    this.creepIDs = creepIDs
-    this.room = room
-  }
-
+export class SoldierManager extends Manager {
   private get UnusedCreeps(): string[] {
     return this.creepIDs.filter(x => !this.usedCreeps.includes(x));
   }

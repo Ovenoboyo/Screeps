@@ -1,14 +1,9 @@
-import { findDroppedEnergy, findRuin, findStorageToDeposit } from "./energyStorageManager"
+import { findDroppedEnergy, findRuin, findStorageToDeposit } from "../storageManagers/energyStorageManager"
+
 import { Janitor } from "utils/roles/janitor"
+import { Manager } from "../genericManager"
 
-export class JanitorManager {
-  private creepIDs: string[]
-  private usedCreeps: string[] = []
-
-  public constructor(creepIDs: string[]) {
-    this.creepIDs = creepIDs
-  }
-
+export class JanitorManager extends Manager {
   private assignDeployers() {
     for (const id of this.creepIDs) {
       const creep = Game.creeps[id]
@@ -19,11 +14,7 @@ export class JanitorManager {
         this.usedCreeps.push(id)
       }
     }
-    return this.UnusedCreeps
-  }
-
-  private get UnusedCreeps(): string[] {
-    return this.creepIDs.filter(x => !this.usedCreeps.includes(x));
+    return this.unusedCreeps
   }
 
   public manage(): string[] {

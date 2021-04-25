@@ -6,7 +6,7 @@
         "editor.formatOnSave": true
     },
     "[typescript]": {
-        "editor.formatOnSave": true
+        "editor.formatOnSave": true,
     },
     "editor.codeActionsOnSave": {
         "source.fixAll.eslint": true
@@ -14,8 +14,10 @@
     "editor.formatOnSave": true,
     "editor.renderWhitespace": "boundary",
     "files.encoding": "utf8",
+    "sort-imports.on-save": true,
     "files.insertFinalNewline": true,
     "files.trimTrailingWhitespace": true,
+
     "search.exclude": {
         "_book/**": true,
         ".rpt2_cache/**": true,

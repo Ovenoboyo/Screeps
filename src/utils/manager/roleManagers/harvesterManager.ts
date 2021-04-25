@@ -1,18 +1,8 @@
 import { Harvester } from "utils/roles/harvester"
-import { findStorageToDeposit } from "./energyStorageManager"
+import { Manager } from "../genericManager"
+import { findStorageToDeposit } from "../storageManagers/energyStorageManager"
 
-export class HarvesterManager {
-  private sources: Source[] = []
-  private room: Room
-  private creepIDs: string[]
-  private occupiedCreeps: string[] = []
-
-  public constructor(room: Room, creepIDs: string[]) {
-    this.sources = room.find(FIND_SOURCES_ACTIVE)
-    this.room = room
-    this.creepIDs = creepIDs
-  }
-
+export class HarvesterManager extends Manager {
   private getSourceMap(source: Source): SourceMap {
     return {
       top: { pos: new RoomPosition(source.pos.x, source.pos.y + 1, this.room.name), type: this.room.getTerrain().get(source.pos.x, source.pos.y + 1), isOccupied: false },
@@ -27,7 +17,7 @@ export class HarvesterManager {
   }
 
   private isCreepAssigned(id: string): boolean {
-    return this.occupiedCreeps.includes(id)
+    return this.usedCreeps.includes(id)
   }
 
   private hasSourceEmptyTile(sourceMap: SourceMap): string | undefined {
@@ -42,16 +32,12 @@ export class HarvesterManager {
     new Harvester(Game.creeps[id], findStorageToDeposit(Game.creeps[id], false, false, false), source, pos).run()
   }
 
-  private get UnusedCreeps() {
-    return this.creepIDs.filter(x => !this.occupiedCreeps.includes(x));
-  }
-
   private checkAllSources(sources: Source[]): string[] {
     for (const source of sources) {
       this.isSourceFarmable(source)
     }
 
-    return this.UnusedCreeps
+    return this.unusedCreeps
   }
 
   private assignHarvesters(ids: string[], sourcePositionMap: SourceMap, source: Source) {
@@ -61,7 +47,7 @@ export class HarvesterManager {
         if ((position = this.hasSourceEmptyTile(sourcePositionMap)) !== undefined) {
           this.generateHarvester(id, source, sourcePositionMap[position].pos)
           sourcePositionMap[position].isOccupied = true
-          this.occupiedCreeps.push(id)
+          this.unusedCreeps.push(id)
         }
       }
     }
@@ -75,6 +61,7 @@ export class HarvesterManager {
   }
 
   public manage(): string[] {
-    return this.checkAllSources(this.sources)
+    const sources = this.room.find(FIND_SOURCES_ACTIVE)
+    return this.checkAllSources(sources)
   }
 }

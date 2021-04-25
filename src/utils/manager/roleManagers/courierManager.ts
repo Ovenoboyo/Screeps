@@ -1,15 +1,9 @@
-import { findStorageToDeposit, findStorageToWithdraw } from "./energyStorageManager"
+import { findStorageToDeposit, findStorageToWithdraw } from "../storageManagers/energyStorageManager"
+
 import { Courier } from "utils/roles/courier"
+import { Manager } from "../genericManager"
 
-
-export class CourierManager {
-  private creepIDs: string[]
-  private usedCreeps: string[] = []
-
-  public constructor(creepIDs: string[]) {
-    this.creepIDs = creepIDs
-  }
-
+export class CourierManager extends Manager {
   private assignCouriers() {
     for (const id of this.creepIDs) {
       const creep = Game.creeps[id]
@@ -20,13 +14,8 @@ export class CourierManager {
         this.usedCreeps.push(id)
       }
     }
-    return this.UnusedCreeps
+    return this.unusedCreeps
   }
-
-  private get UnusedCreeps(): string[] {
-    return this.creepIDs.filter(x => !this.usedCreeps.includes(x));
-  }
-
   public manage(): string[] {
     return this.assignCouriers()
   }

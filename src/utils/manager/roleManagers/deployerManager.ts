@@ -1,15 +1,7 @@
 import { Deployer } from "utils/roles/deployer"
+import { Manager } from "../genericManager"
 
-export class DeployerManager {
-  private spawn: StructureSpawn
-  private creepIDs: string[]
-  private usedCreeps: string[] = []
-
-  public constructor(spawn: StructureSpawn, creepIDs: string[]) {
-    this.spawn = spawn
-    this.creepIDs = creepIDs
-  }
-
+export class DeployerManager extends Manager {
   private assignDeployers() {
 
     for (const [index, id] of this.creepIDs.entries()) {
@@ -18,11 +10,7 @@ export class DeployerManager {
         this.usedCreeps.push(id)
       }
     }
-    return this.UnusedCreeps
-  }
-
-  private get UnusedCreeps(): string[] {
-    return this.creepIDs.filter(x => !this.usedCreeps.includes(x));
+    return this.unusedCreeps
   }
 
   public manage(): string[] {

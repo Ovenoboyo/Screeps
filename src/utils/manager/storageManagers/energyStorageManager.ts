@@ -1,4 +1,3 @@
-
 export const storageUsedMap: { [key: string]: { withdrawing: boolean, depositing: boolean } } = {}
 
 export function findStorage(creep: Creep, avoidExtension: boolean, avoidSpawn: boolean, avoidContainer: boolean, capacityCheckCallback: (freeCapacity: number, totalCapacity: number) => boolean): EnergyStorage | null {
@@ -21,8 +20,8 @@ export function findStorageToWithdraw(creep: Creep, avoidExtension: boolean, avo
   return findStorage(creep, avoidExtension, avoidSpawn, avoidContainer, (freeCapacity, total) => freeCapacity < total)
 }
 
-export function findDroppedEnergy(creep: Creep): Resource<'energy'> | null {
-  return creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES, { filter: resource => resource.resourceType === 'energy' && resource.amount > 25 }) as Resource<'energy'> | null
+export function findDroppedEnergy(creep: Creep): Resource<'energy'> | Tombstone | null {
+  return creep.pos.findClosestByRange(FIND_TOMBSTONES, { filter: (tomb) => tomb.store.energy > 0 }) || creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES, { filter: resource => resource.resourceType === 'energy' && resource.amount > 25 }) as Resource<'energy'> | null
 }
 
 export function findRuin(creep: Creep): Ruin {

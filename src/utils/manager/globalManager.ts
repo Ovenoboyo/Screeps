@@ -7,6 +7,7 @@ import { DeployerManager } from './roleManagers/deployerManager'
 import { HarvesterManager } from './roleManagers/harvesterManager'
 import { JanitorManager } from './roleManagers/janitorManager'
 import { SoldierManager } from './roleManagers/soldierManager'
+import { TaskManager } from './tasks'
 import { TowerManager } from './structureManagers/towerManager'
 
 export class GlobalManager {
@@ -21,6 +22,17 @@ export class GlobalManager {
       const room = Game.creeps[c].room.name
       if (this.creepIDs[room]) this.creepIDs[room].push(c)
       else this.creepIDs[room] = [c]
+    }
+
+    Creep.prototype.moveToCustom = function (pos, opts) {
+      const stroke = (opts && opts.visualizePathStyle && opts.visualizePathStyle.stroke) ? opts.visualizePathStyle.stroke : undefined
+      this.memory.ongoingTask = { type: 'move', field: { target: pos instanceof RoomPosition ? pos : pos.pos, color: stroke } }
+      return this.moveTo(pos, opts)
+    }
+
+    Creep.prototype.withdrawCustom = function (target, resourceType, amount) {
+      this.memory.ongoingTask = { type: 'withdraw', field: target }
+      return this.withdraw(target, resourceType, amount)
     }
   }
 
@@ -63,6 +75,7 @@ export class GlobalManager {
 
   private assignRoles() {
     for (const room in this.creepIDs) {
+      this.creepIDs[room].push(...new TaskManager(Game.rooms[room], this.spawn, this.creepIDs[room]).manage())
       this.creepIDs[room].push(...new JanitorManager(Game.rooms[room], this.spawn, this.nextCreep('janitor', room, JANITOR_COUNT, true)).manage())
       this.creepIDs[room].push(...new HarvesterManager(Game.rooms[room], this.spawn, this.nextCreep('harvester', room, undefined, true)).manage())
       this.creepIDs[room].push(...new CourierManager(Game.rooms[room], this.spawn, this.nextCreep('courier', room, COURIER_COUNT, true)).manage())

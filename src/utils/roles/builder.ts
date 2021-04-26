@@ -11,16 +11,16 @@ export class Builder {
     this.constructionSite = constructionSite
   }
 
-  private moveToConstruction() {
-    this.creep.moveTo(this.constructionSite, { visualizePathStyle: { stroke: BUILDER_COLOR } })
+  private moveToCustomConstruction() {
+    this.creep.moveToCustom(this.constructionSite, { visualizePathStyle: { stroke: BUILDER_COLOR } })
   }
 
   private build() {
     return this.creep.build(this.constructionSite)
   }
 
-  private moveToStorage() {
-    this.creep.moveTo(this.storage, { visualizePathStyle: { stroke: BUILDER_COLOR } })
+  private moveToCustomStorage() {
+    this.creep.moveToCustom(this.storage, { visualizePathStyle: { stroke: BUILDER_COLOR } })
   }
 
   private shouldCollect(): boolean {
@@ -29,7 +29,7 @@ export class Builder {
 
   private withdrawFromStorage() {
     if (this.creep.withdraw(this.storage, "energy") === ERR_NOT_IN_RANGE)
-      this.moveToStorage()
+      this.moveToCustomStorage()
   }
 
   public run(): void {
@@ -37,7 +37,7 @@ export class Builder {
       this.withdrawFromStorage()
     } else {
       if (this.build() === ERR_NOT_IN_RANGE) {
-        this.moveToConstruction()
+        this.moveToCustomConstruction()
       }
     }
   }

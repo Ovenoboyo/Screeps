@@ -15,9 +15,9 @@ export class Deployer {
     this.isUpgrader = isUpgrader
   }
 
-  private moveToController() {
+  private moveToCustomController() {
     if (this.controller)
-      this.creep.moveTo(this.controller, { visualizePathStyle: { stroke: DEPLOYER_COLOR } })
+      this.creep.moveToCustom(this.controller, { visualizePathStyle: { stroke: DEPLOYER_COLOR } })
   }
 
   private depositInController() {
@@ -34,8 +34,8 @@ export class Deployer {
     }
   }
 
-  private moveToSpawn() {
-    this.creep.moveTo(this.spawn, { visualizePathStyle: { stroke: DEPLOYER_COLOR } })
+  private moveToCustomSpawn() {
+    this.creep.moveToCustom(this.spawn, { visualizePathStyle: { stroke: DEPLOYER_COLOR } })
   }
 
   private shouldCollect(): boolean {
@@ -44,10 +44,10 @@ export class Deployer {
 
   public run(): void {
     if (this.shouldCollect()) {
-      this.moveToSpawn()
+      this.moveToCustomSpawn()
       this.creep.withdraw(this.spawn, "energy")
     } else {
-      if (this.depositInController() === ERR_NOT_IN_RANGE) this.moveToController()
+      if (this.depositInController() === ERR_NOT_IN_RANGE) this.moveToCustomController()
     }
     this.checkControllerUpgrade()
   }

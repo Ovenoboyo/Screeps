@@ -3,10 +3,6 @@ import { Manager } from "../genericManager";
 import { Soldier } from "utils/roles/soldier";
 
 export class SoldierManager extends Manager {
-  private get UnusedCreeps(): string[] {
-    return this.creepIDs.filter(x => !this.usedCreeps.includes(x));
-  }
-
   private findHostile(): Creep[] | Structure[] {
     return this.room.find(FIND_HOSTILE_CREEPS, { filter: creep => !HOSTILE_WHITELIST.includes(creep.owner.username) }) || (Game.creeps[this.creepIDs[0]].room.find(FIND_HOSTILE_STRUCTURES, { filter: structure => structure.owner ? !HOSTILE_WHITELIST.includes(structure.owner.username) : true }) as Structure[])
   }
@@ -19,7 +15,7 @@ export class SoldierManager extends Manager {
         this.usedCreeps.push(id)
       }
     }
-    return this.UnusedCreeps
+    return this.unusedCreeps
   }
 
   public manage(): string[] {

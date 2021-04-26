@@ -8,8 +8,8 @@ export class CourierManager extends Manager {
     for (const id of this.creepIDs) {
       const creep = Game.creeps[id]
       const withdraw = findStorageToWithdraw(creep, true, true, false)
-      const deposit = findTower(creep) || findStorageToDeposit(creep, false, false, true)
-      if (withdraw) {
+      const deposit = findStorageToDeposit(creep, false, false, true) || findTower(creep)
+      if (withdraw || (!withdraw && Game.creeps[id].store.energy > 0 && deposit)) {
         new Courier(Game.creeps[id], deposit, withdraw).run()
         this.usedCreeps.push(id)
       }

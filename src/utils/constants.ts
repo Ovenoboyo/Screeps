@@ -6,7 +6,7 @@ export const REPAIRER_COLOR = "#fcff5c"
 export const JANITOR_COLOR = "#fc0366"
 
 export const JANITOR_SPAWN_COUNT = 0
-export const COURIER_SPAWN_COUNT = 1
+export const COURIER_SPAWN_COUNT = 2
 export const BUILDER_SPAWN_COUNT = 2
 export const REPAIRER__SPAWN_COUNT = 0
 export const HARVESTER_SPAWN_COUNT = 3

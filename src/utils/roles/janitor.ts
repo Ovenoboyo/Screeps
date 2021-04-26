@@ -11,12 +11,12 @@ export class Janitor {
     this.dropped = dropped
   }
 
-  private moveToCustomDeposit() {
-    this.creep.moveToCustom(this.deposit, { visualizePathStyle: { stroke: JANITOR_COLOR } })
+  private moveToDeposit() {
+    this.creep.moveTo(this.deposit, { visualizePathStyle: { stroke: JANITOR_COLOR } })
   }
 
-  private moveToCustomDrop() {
-    this.creep.moveToCustom(this.dropped, { visualizePathStyle: { stroke: JANITOR_COLOR } })
+  private moveToDrop() {
+    this.creep.moveTo(this.dropped, { visualizePathStyle: { stroke: JANITOR_COLOR } })
   }
 
   private pickup() {
@@ -37,12 +37,12 @@ export class Janitor {
 
   public run(): void {
     if (this.pickup() === ERR_NOT_IN_RANGE) {
-      this.moveToCustomDrop()
+      this.moveToDrop()
     }
 
     if (this.shouldStore()) {
       if (this.depositInSpawn() === ERR_NOT_IN_RANGE) {
-        this.moveToCustomDeposit()
+        this.moveToDeposit()
       }
     }
   }

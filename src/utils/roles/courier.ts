@@ -11,15 +11,14 @@ export class Courier {
     this.storage = storage
   }
 
-  private moveToCustomSpawn() {
+  private moveToSpawn() {
     if (this.spawn)
-      this.creep.moveToCustom(this.spawn, { visualizePathStyle: { stroke: COURIER_COLOR } })
-
+      this.creep.moveTo(this.spawn, { visualizePathStyle: { stroke: COURIER_COLOR } })
   }
 
-  private moveToCustomStorage() {
+  private moveToStorage() {
     if (this.storage)
-      this.creep.moveToCustom(this.storage, { visualizePathStyle: { stroke: COURIER_COLOR } })
+      this.creep.moveTo(this.storage, { visualizePathStyle: { stroke: COURIER_COLOR } })
   }
 
   private withdrawFromStorage() {
@@ -58,9 +57,9 @@ export class Courier {
 
   public run(): void {
     if (this.shouldTransfer()) {
-      if (!this.isSpawnFull() && this.depositInSpawn() === ERR_NOT_IN_RANGE) this.moveToCustomSpawn()
+      if (!this.isSpawnFull() && this.depositInSpawn() === ERR_NOT_IN_RANGE) this.moveToSpawn()
     } else {
-      if (this.withdrawFromStorage() === ERR_NOT_IN_RANGE) this.moveToCustomStorage()
+      if (this.withdrawFromStorage() === ERR_NOT_IN_RANGE) this.moveToStorage()
     }
   }
 }

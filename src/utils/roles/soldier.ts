@@ -11,11 +11,11 @@ export class Soldier {
     return this.creep.attack(this.hostile)
   }
 
-  private moveToCustomHostile() {
-    return this.creep.moveToCustom(this.hostile)
+  private moveToHostile() {
+    return this.creep.moveTo(this.hostile)
   }
 
   public run(): void {
-    if (this.attackHostile() === ERR_NOT_IN_RANGE) this.moveToCustomHostile()
+    if (this.attackHostile() === ERR_NOT_IN_RANGE) this.moveToHostile()
   }
 }

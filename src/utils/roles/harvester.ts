@@ -13,17 +13,17 @@ export class Harvester {
     this.pos = pos
   }
 
-  private moveToCustomSource(): ERR_NOT_IN_RANGE | OK {
+  private moveToSource(): ERR_NOT_IN_RANGE | OK {
     if (this.pos) {
       if (!this.creep.pos.isEqualTo(this.pos)) {
-        this.creep.moveToCustom(this.pos, { visualizePathStyle: { stroke: HARVESTER_COLOR } })
+        this.creep.moveTo(this.pos, { visualizePathStyle: { stroke: HARVESTER_COLOR } })
         if (!this.creep.pos.isEqualTo(this.pos)) return ERR_NOT_IN_RANGE
       }
       return OK
     }
 
     if (this.nearestSource)
-      this.creep.moveToCustom(this.nearestSource)
+      this.creep.moveTo(this.nearestSource)
     return OK
   }
 
@@ -34,9 +34,9 @@ export class Harvester {
     return 0
   }
 
-  private moveToCustomStorage() {
+  private moveToStorage() {
     if (this.storage)
-      this.creep.moveToCustom(this.storage, { visualizePathStyle: { stroke: HARVESTER_COLOR } })
+      this.creep.moveTo(this.storage, { visualizePathStyle: { stroke: HARVESTER_COLOR } })
   }
 
   private transfer(target: Structure<any>, resource: ResourceConstant) {
@@ -63,9 +63,9 @@ export class Harvester {
     if (this.shouldTransfer()) {
       if (this.storage)
         if (this.transfer(this.storage, "energy") === ERR_NOT_IN_RANGE)
-          this.moveToCustomStorage()
+          this.moveToStorage()
     } else {
-      if (this.moveToCustomSource() === OK) {
+      if (this.moveToSource() === OK) {
         this.harvestSource()
       }
     }
